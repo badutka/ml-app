@@ -2,4 +2,7 @@ pandas
 numpy
 seaborn
 ensure
+python-box==6.0.2
+coloredlogs==15.0.1
+PyYAML
 -e .
