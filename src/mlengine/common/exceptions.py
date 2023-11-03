@@ -1,5 +1,5 @@
 import sys
-from logger import logger
+from mlengine.common.logger import logger
 
 
 class ExceptionWithIDMixin(object):
@@ -24,9 +24,9 @@ class DetailedGenericException(GenericException):
         # todo: if e hasattr id or message -> get them from e into new exception
         _, _, exc_tb = error_detail.exc_info()
         file_name = exc_tb.tb_frame.f_code.co_filename
-        error_info = f"\n\tError occured in {file_name} on line number {exc_tb.tb_lineno}."
+        error_info = f"Error occured in {file_name} on line number {exc_tb.tb_lineno}."
         if message:
-            error_info += f"\n\t\t Error message: \n\t\t\t{message}."
+            error_info += f"\nError message: {message}."
 
         super().__init__(id, error_info)
 
