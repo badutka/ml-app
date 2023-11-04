@@ -6,6 +6,10 @@ from mlengine.data_read.read import DataIngestion
 
 
 class Pipeline(metaclass=abc.ABCMeta):
+    """
+    Interface for pipeline
+    """
+
     @classmethod
     def __subclasshook__(cls, subclass):
         return (hasattr(subclass, 'run') and
@@ -20,6 +24,10 @@ class Pipeline(metaclass=abc.ABCMeta):
 
 
 class PipelineRunner:
+    """
+    Responsible for encapsulating running any pipeline that fits the Pipeline Interface flow
+    """
+
     def __init__(self, pipeline_object: Pipeline, stage_name: str):
         self.pipeline_object = pipeline_object
         self.stage_name = stage_name
@@ -37,6 +45,10 @@ class PipelineRunner:
 
 
 class DataIngestionPipeline(Pipeline):
+    """
+    Pipeline that run data ingestion process
+    """
+
     @staticmethod
     def run():
         data_ingestion = DataIngestion(config=settings.data_ingestion)
@@ -44,7 +56,12 @@ class DataIngestionPipeline(Pipeline):
         data_ingestion.extract_zip_file()
 
 
-def run_pipeline(option: str):
+def run_pipeline(option: str) -> None:
+    """
+    Facade for running pipeline chosen by option parameter
+
+    :param option: str matched against a set of options to determine which pipeline to run
+    """
     match option:
         case 'data_ingestion':
             pipeline = DataIngestionPipeline()
