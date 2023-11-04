@@ -4,8 +4,7 @@ from pathlib import Path
 import typing
 from mlengine.common.utils import read_yaml
 import os
-
-CONFIG_FILE_PATH = Path("config/settings.yaml")
+from box import ConfigBox
 
 
 class Singleton(type):
@@ -21,17 +20,30 @@ class Singleton(type):
 
 
 class SettingsManager(metaclass=Singleton):
-    def __init__(self, config_filepath=CONFIG_FILE_PATH):
+    def __init__(self):
         pass
-        self.settings = read_yaml(config_filepath)
+        current_file_path = os.path.abspath(__file__)
+        file_path = Path(os.path.join(os.path.dirname(current_file_path), "settings.yaml"))
+        self.settings = read_yaml(file_path)
 
-    def initialize_settings(self, settings_class):
+    # def get_settings(self) -> ConfigBox:
+    #     return self.settings
+
+    def initialize_settings(self, settings_class) -> ConfigBox:
         return settings_class(**self.settings)
 
 
+class DataIngestionSettings(BaseModel):
+    root_dir: str
+    source_URL: str
+    local_data_file: str
+    unzip_dir: str
+
+
 class Settings(BaseModel):
-    x1: int
+    artifacts_root: str
+    data_ingestion: DataIngestionSettings
 
 
-settings_manager = SettingsManager()
-settings = settings_manager.initialize_settings(Settings)
+# settings = SettingsManager().get_settings()
+settings = SettingsManager().initialize_settings(Settings)
