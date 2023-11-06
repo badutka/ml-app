@@ -1,0 +1,34 @@
+artifacts_root: artifacts
+
+data_ingestion:
+  root_dir: artifacts/data
+  source_URL: https://github.com/badutka/ml-app/raw/develop/stud.zip
+  local_data_file: artifacts/data/stud.zip
+  unzip_dir: artifacts/data
+
+data_validation:
+  data_file: artifacts/data/stud.csv
+  required_files: [ stud.csv ]
+  data_root_dir: artifacts/data
+  root_dir: artifacts/data_validation
+  status_file: artifacts/data_validation/status_data_validation.txt
+
+data_transformation:
+  data_file: artifacts/data/stud.csv
+  required_files: [ stud.csv ]
+  data_root_dir: artifacts/data
+  root_dir: artifacts/data_transformation
+  data_file_transformed: artifacts/data_transformation/stud_tnsf.csv
+  status_file: artifacts/data_validation/status_data_transformation.txt
+
+plot_layouts:
+  features_plots_layout:
+    height: 750
+    width: 900
+    margin:
+      t: 20
+      l: 5
+      r: 5
+      b: 10
+    showlegend: true
+    bargap: 0.05
