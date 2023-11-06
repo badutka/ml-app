@@ -8,8 +8,18 @@ data_ingestion:
 
 data_validation:
   data_file: artifacts/data/stud.csv
+  required_files: [ stud.csv ]
+  data_root_dir: artifacts/data
   root_dir: artifacts/data_validation
-  status_file: artifacts/data_validation/status.txt
+  status_file: artifacts/data_validation/status_data_validation.txt
+
+data_transformation:
+  data_file: artifacts/data/stud.csv
+  required_files: [ stud.csv ]
+  data_root_dir: artifacts/data
+  root_dir: artifacts/data_transformation
+  data_file_transformed: artifacts/data_transformation/stud_tnsf.csv
+  status_file: artifacts/data_validation/status_data_transformation.txt
 
 plot_layouts:
   features_plots_layout:

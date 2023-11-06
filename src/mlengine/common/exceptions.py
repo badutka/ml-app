@@ -18,6 +18,13 @@ class GenericException(ExceptionWithIDMixin, ExceptionWithMsgMixin, Exception):
     def __init__(self, id: int | str, message: str):
         super().__init__(id, message)
 
+    def __str__(self):
+        return self.message
+
+
+class MissingCriticalFileException(GenericException):
+    pass
+
 
 class DetailedGenericException(GenericException):
     def __init__(self, id: int | str, message: str, error_detail: sys, *args, **kwargs):

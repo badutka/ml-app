@@ -30,7 +30,19 @@ class DataIngestionSettings(BaseModel):
 @dataclass(frozen=True)
 class DataValidationSettings(BaseModel):
     data_file: Path
+    required_files: typing.List
+    # data_root_dir: Path
     root_dir: Path
+    status_file: Path
+
+
+@dataclass(frozen=True)
+class DataTransformationSettings(BaseModel):
+    data_file: Path
+    required_files: typing.List
+    data_root_dir: Path
+    root_dir: Path
+    status_file: Path
     status_file: Path
 
 
@@ -49,6 +61,7 @@ class Settings(BaseModel):
     artifacts_root: Path
     data_ingestion: DataIngestionSettings
     data_validation: DataValidationSettings
+    data_transformation: DataTransformationSettings
     plot_layouts: PlotLayoutsSettings
 
 

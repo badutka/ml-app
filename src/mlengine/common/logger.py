@@ -52,7 +52,7 @@ class Logger(metaclass=Singleton):
                     'critical': {'color': 'red', 'bold': True}
                 })
 
-            logger.info("Logging initialized.")
+            logger.info(f"Logging initialized.\n{30*'*'}")
 
         return logging.getLogger(LOG_FILE)
 
