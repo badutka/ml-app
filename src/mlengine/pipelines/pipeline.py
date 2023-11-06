@@ -4,7 +4,7 @@ from mlengine.config.settings import settings
 from mlengine.common.logger import logger
 from mlengine.data_read.read import DataIngestion
 from mlengine.common.utils import create_directories
-from mlengine.dataops.validate import FileValidator, StudentDataValidator
+from mlengine.dataops.validate import FileValidator, StudentDataValidator, StudentTransformedDataValidator
 from mlengine.dataops.transform import StudentDataTransformer
 
 
@@ -12,6 +12,7 @@ class Pipeline(metaclass=abc.ABCMeta):
     """
     Interface for pipeline
     """
+
     @classmethod
     def __subclasshook__(cls, subclass):
         return (hasattr(subclass, 'run') and
@@ -29,6 +30,7 @@ class PipelineRunner:
     """
     Responsible for encapsulating running any pipeline that fits the Pipeline Interface flow
     """
+
     def __init__(self, pipeline_object: Pipeline, stage_name: str):
         self.pipeline_object = pipeline_object
         self.stage_name = stage_name
@@ -49,6 +51,7 @@ class DataIngestionPipeline(Pipeline):
     """
     Pipeline that runs data ingestion process
     """
+
     @staticmethod
     def run():
         create_directories([settings.artifacts_root])
@@ -61,6 +64,7 @@ class DataValidationPreTransformPipeline(Pipeline):
     """
     Pipeline that runs data validation process
     """
+
     @staticmethod
     def run():
         file_validator = FileValidator(config=settings.data_validation)
@@ -73,6 +77,7 @@ class DataTransformationPipeline(Pipeline):
     """
     Pipeline that runs data transformation process
     """
+
     @staticmethod
     def run():
         file_validator = FileValidator(config=settings.data_transformation)
@@ -80,6 +85,19 @@ class DataTransformationPipeline(Pipeline):
         data_transformer = StudentDataTransformer(config=settings.data_transformation)
         data_transformer.transform()
         data_transformer.save()
+
+
+class DataValidationPostTransformPipeline(Pipeline):
+    """
+    Pipeline that runs data transformation process
+    """
+
+    @staticmethod
+    def run():
+        file_validator = FileValidator(config=settings.data_validation_post_t)
+        file_validator.validate_all_files_exist()
+        data_validator = StudentTransformedDataValidator(config=settings.data_validation_post_t)
+        data_validator.validate_data()
 
 
 def run_pipeline(option: str) -> None:
@@ -98,6 +116,9 @@ def run_pipeline(option: str) -> None:
         case 'data_transformation':
             stage_name = "Data Transformation"
             pipeline = DataTransformationPipeline()
+        case 'data_validation_post_t':
+            stage_name = "Data Validation (Post-T)"
+            pipeline = DataValidationPostTransformPipeline()
         case other:
             raise ValueError(f'Incorrect option: {other}.')
 

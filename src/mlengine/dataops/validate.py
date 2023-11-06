@@ -19,7 +19,7 @@ class StudentDataTypesValidator(pydantic.BaseModel):
     writing_score: pydantic.StrictInt
 
 
-class StudentDataTypesValidatorTransformed(pydantic.BaseModel):
+class StudentTransformedDataTypesValidator(pydantic.BaseModel):
     gender: pydantic.StrictStr
     race_ethnicity: pydantic.StrictStr
     parental_level_of_education: pydantic.StrictStr
@@ -33,6 +33,19 @@ class StudentDataTypesValidatorTransformed(pydantic.BaseModel):
 
 
 class StudentDataValidator:
+    def __init__(self, config: ConfigBox):
+        self.config: ConfigBox = config
+
+    def validate_data(self):
+        try:
+            df = read_csv_file(self.config.data_file)
+            data_list = [StudentDataTypesValidator(**row) for _, row in df.iterrows()]
+            logger.info(f'Successful validation of data file {self.config.data_file} via Pydantic strict types')
+        except Exception as e:
+            raise e
+
+
+class StudentTransformedDataValidator:
     def __init__(self, config: ConfigBox):
         self.config: ConfigBox = config
 

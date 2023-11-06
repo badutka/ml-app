@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, Field, model_validator, ConfigDict
 from dataclasses import dataclass
 from pathlib import Path
 import typing
@@ -22,6 +22,7 @@ class Singleton(type):
 class UnexpectedPropertyValidator(BaseModel):
     class Config:
         frozen = True
+        protected_namespaces = ()
 
     @model_validator(mode='before')
     def check_unexpected_properties(cls, values):
@@ -56,6 +57,22 @@ class DataTransformationSettings(UnexpectedPropertyValidator):
     status_file: Path
 
 
+class DataValidationPostTransformSettings(UnexpectedPropertyValidator):
+    data_file: Path
+    required_files: typing.List
+    data_root_dir: Path
+    root_dir: Path
+    status_file: Path
+
+
+class ModelTrainingSettings(UnexpectedPropertyValidator):
+    data_file: Path
+    required_files: typing.List
+    data_root_dir: Path
+    root_dir: Path
+    status_file: Path
+
+
 class PlotLayoutsSettings(UnexpectedPropertyValidator):
     features_plots_layout: typing.Dict = Field(default_factory=dict)
 
@@ -65,6 +82,8 @@ class Settings(UnexpectedPropertyValidator):
     data_ingestion: DataIngestionSettings
     data_validation: DataValidationSettings
     data_transformation: DataTransformationSettings
+    data_validation_post_t: DataValidationPostTransformSettings
+    model_training: ModelTrainingSettings
     plot_layouts: PlotLayoutsSettings
 
 
@@ -79,6 +98,7 @@ class SettingsManager(metaclass=Singleton):
     #     return self.settings
 
     def initialize_settings(self) -> Settings:
+        # print(model_config['protected_namespaces'])
         return Settings(**self.settings)
 
 

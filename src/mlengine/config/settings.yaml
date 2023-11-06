@@ -21,6 +21,13 @@ data_transformation:
   data_file_transformed: artifacts/data_transformation/stud_tnsf.csv
   status_file: artifacts/data_validation/status_data_transformation.txt
 
+data_validation_post_t:
+  data_file: artifacts/data_transformation/stud_tnsf.csv
+  required_files: [ stud_tnsf.csv ]
+  data_root_dir: artifacts/data_transformation
+  root_dir: artifacts/data_validation
+  status_file: artifacts/data_validation/status_data_validation_post_t.txt
+
 plot_layouts:
   features_plots_layout:
     height: 750
