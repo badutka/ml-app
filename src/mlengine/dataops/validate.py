@@ -70,7 +70,7 @@ class FileValidator:
 
             status = all(statuses)
 
-            with open(self.config.STATUS_FILE, 'w') as f:
+            with open(self.config.status_file, 'w') as f:
                 for msg in messages:
                     f.write(msg + "\n")
                 f.write(f"Overall status: {status}")
