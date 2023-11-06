@@ -152,3 +152,4 @@ cython_debug/
 #.idea/
 
 artifacts/*
+catboost_info/*
