@@ -6,6 +6,7 @@ from mlengine.data_read.read import DataIngestion
 from mlengine.common.utils import create_directories
 from mlengine.dataops.validate import FileValidator, StudentDataValidator, StudentTransformedDataValidator
 from mlengine.dataops.transform import StudentDataTransformer
+from mlengine.dataops.split import DataSplitter
 
 
 class Pipeline(metaclass=abc.ABCMeta):
@@ -100,6 +101,19 @@ class DataValidationPostTransformPipeline(Pipeline):
         data_validator.validate_data()
 
 
+class DataSplitPipeline(Pipeline):
+    """
+    Pipeline that runs dataset split process
+    """
+
+    @staticmethod
+    def run():
+        file_validator = FileValidator(config=settings.data_split)
+        file_validator.validate_all_files_exist()
+        data_splitter = DataSplitter(config=settings.data_split, model_config=settings.model)
+        data_splitter.train_validate_test_split()
+
+
 def run_pipeline(option: str) -> None:
     """
     Facade for running pipeline chosen by option parameter
@@ -119,6 +133,9 @@ def run_pipeline(option: str) -> None:
         case 'data_validation_post_t':
             stage_name = "Data Validation (Post-T)"
             pipeline = DataValidationPostTransformPipeline()
+        case 'data_split':
+            stage_name = "Dataset Split"
+            pipeline = DataSplitPipeline()
         case other:
             raise ValueError(f'Incorrect option: {other}.')
 

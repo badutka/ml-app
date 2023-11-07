@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field, model_validator, ConfigDict
+import pydantic
+from pydantic import BaseModel, Field, model_validator, ConfigDict, constr
 from dataclasses import dataclass
 from pathlib import Path
 import typing
@@ -65,10 +66,26 @@ class DataValidationPostTransformSettings(UnexpectedPropertyValidator):
     status_file: Path
 
 
-class ModelTrainingSettings(UnexpectedPropertyValidator):
-    data_file: Path
-    required_files: typing.List
+class DataSplitSettings(UnexpectedPropertyValidator):
+    test_size: pydantic.StrictFloat
     data_root_dir: Path
+    required_files: typing.List
+    data_file: Path
+    root_dir: Path
+    split_files: typing.List
+    status_file: Path
+
+
+class ModelSettings(UnexpectedPropertyValidator):
+    target: pydantic.StrictStr
+    model_type: constr(pattern='^(regression|classification)$')
+    preprocessing: constr(pattern='^(joint|disjoint)$')
+
+
+class ModelTrainingSettings(UnexpectedPropertyValidator):
+    data_root_dir: Path
+    required_files: typing.List
+    data_file: Path
     root_dir: Path
     status_file: Path
 
@@ -83,6 +100,8 @@ class Settings(UnexpectedPropertyValidator):
     data_validation: DataValidationSettings
     data_transformation: DataTransformationSettings
     data_validation_post_t: DataValidationPostTransformSettings
+    data_split: DataSplitSettings
+    model: ModelSettings
     model_training: ModelTrainingSettings
     plot_layouts: PlotLayoutsSettings
 
