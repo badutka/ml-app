@@ -84,6 +84,14 @@ class ModelPreprocessingSettings(UnexpectedPropertyValidator):
 
 class ModelTrainingSettings(UnexpectedPropertyValidator):
     root_dir: Path
+    models_dir: Path
+    req_files: typing.List
+    status_file: Path
+
+
+class ModelValidationSettings(UnexpectedPropertyValidator):
+    root_dir: Path
+    models_dir: Path
     req_files: typing.List
     status_file: Path
 
@@ -104,6 +112,7 @@ class Settings(UnexpectedPropertyValidator):
     model: ModelSettings
     model_preprocessing: ModelPreprocessingSettings
     model_training: ModelTrainingSettings
+    model_validation: ModelValidationSettings
 
     plot_layouts: PlotLayoutsSettings
 

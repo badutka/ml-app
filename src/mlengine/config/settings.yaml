@@ -43,8 +43,15 @@ model_preprocessing:
 
 model_training:
   root_dir: artifacts/model_training
+  models_dir: artifacts/model_training/models
   req_files: [ artifacts/data_split/X_train.csv, artifacts/data_split/y_train.csv, artifacts/model_preprocessing/preprocessing_pipeline.pkl ]
   status_file: model_training_status.txt
+
+model_validation:
+  root_dir: artifacts/model_validation
+  models_dir: artifacts/model_training/models
+  req_files: [ artifacts/data_split/X_validate.csv, artifacts/data_split/y_validate.csv, artifacts/model_preprocessing/preprocessing_pipeline.pkl ]
+  status_file: model_validation_status.txt
 
 plot_layouts:
   features_plots_layout:

@@ -9,6 +9,7 @@ from mlengine.dataops.transform import StudentDataTransformer
 from mlengine.dataops.split import DataSplitter
 from mlengine.features.prep import Preprocessor
 from mlengine.models.train import ModelTrainer
+from mlengine.models.evaluate import ModelEvaluator
 
 
 class Pipeline(metaclass=abc.ABCMeta):
@@ -118,7 +119,7 @@ class DataSplitPipeline(Pipeline):
 
 class ModelPreprocessingPipeline(Pipeline):
     """
-    Pipeline that runs dataset split process
+    Pipeline that runs data preprocessing (feature engineering)
     """
 
     @staticmethod
@@ -134,7 +135,7 @@ class ModelPreprocessingPipeline(Pipeline):
 
 class ModelTrainingPipeline(Pipeline):
     """
-    Pipeline that runs dataset split process
+    Pipeline that runs model training process process
     """
 
     @staticmethod
@@ -145,6 +146,27 @@ class ModelTrainingPipeline(Pipeline):
         data_splitter.get_training_data()
         data_splitter.preprocess_training_data()
         data_splitter.train_models()
+        model_evaluator = ModelEvaluator(config=settings.model_training)
+        model_evaluator.load_models()
+        model_evaluator.load_data_files()
+        model_evaluator.preprocess_data()
+        model_evaluator.save_regression_evaluation()
+
+
+class ModelValidationPipeline(Pipeline):
+    """
+    Pipeline that runs model training process process
+    """
+
+    @staticmethod
+    def run():
+        file_validator = FileValidator(config=settings.model_validation)
+        file_validator.validate_all_files_exist()
+        model_evaluator = ModelEvaluator(config=settings.model_validation)
+        model_evaluator.load_models()
+        model_evaluator.load_data_files()
+        model_evaluator.preprocess_data()
+        model_evaluator.save_regression_evaluation()
 
 
 def run_pipeline(option: str) -> None:
@@ -175,6 +197,9 @@ def run_pipeline(option: str) -> None:
         case 'model_training':
             stage_name = "Model Training"
             pipeline = ModelTrainingPipeline()
+        case 'model_validation':
+            stage_name = "Model Validation"
+            pipeline = ModelValidationPipeline()
         case other:
             raise ValueError(f'Incorrect option: {other}.')
 

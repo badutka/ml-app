@@ -9,13 +9,9 @@ from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
 from catboost import CatBoostRegressor
 from xgboost import XGBRegressor
-from sklearn.svm import SVR
-from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
+
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
-from sklearn.compose import ColumnTransformer
-from sklearn.feature_selection import RFE
 
 from mlengine.common.logger import logger
 from mlengine.data_read.read import read_csv_file
@@ -59,4 +55,4 @@ class ModelTrainer():
             best_model = models.fit(self.X_train, self.y_train).best_estimator_
             best_model.fit(self.X_train, self.y_train)  # retrain the model again on full training data (previously we were 1 fold short for each iter of CV)
 
-            joblib.dump(best_model, os.path.join(self.config.root_dir, name + ".pkl"))
+            joblib.dump(best_model, os.path.join(self.config.models_dir, name + ".pkl"))

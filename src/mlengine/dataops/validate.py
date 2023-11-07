@@ -68,6 +68,8 @@ class FileValidator:
 
     def _create_dirs(self):
         create_directories([self.config.root_dir])
+        if hasattr(self.config, 'models_dir'):
+            create_directories([self.config.models_dir])
 
     def validate_all_files_exist(self):
         try:
