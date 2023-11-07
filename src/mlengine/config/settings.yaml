@@ -3,51 +3,44 @@ artifacts_root: artifacts
 data_ingestion:
   root_dir: artifacts/data
   source_URL: https://github.com/badutka/ml-app/raw/develop/stud.zip
-  local_data_file: artifacts/data/stud.zip
+  zipped_file: artifacts/data/stud.zip
   unzip_dir: artifacts/data
+  data_file: stud.csv
 
 data_validation:
-  data_file: artifacts/data/stud.csv
-  required_files: [ stud.csv ]
-  data_root_dir: artifacts/data
   root_dir: artifacts/data_validation
-  status_file: artifacts/data_validation/status_data_validation.txt
+  req_files: [ stud.csv ]
+  status_file: data_validation_status.txt
 
 data_transformation:
-  data_file: artifacts/data/stud.csv
-  required_files: [ stud.csv ]
-  data_root_dir: artifacts/data
   root_dir: artifacts/data_transformation
-  data_file_transformed: artifacts/data_transformation/stud_tnsf.csv
-  status_file: artifacts/data_validation/status_data_transformation.txt
+  req_files: [ stud.csv ]
+  data_file_tnsf: stud_tnsf.csv
+  status_file: data_transformation_status.txt
 
 data_validation_post_t:
-  data_file: artifacts/data_transformation/stud_tnsf.csv
-  required_files: [ stud_tnsf.csv ]
-  data_root_dir: artifacts/data_transformation
   root_dir: artifacts/data_validation
-  status_file: artifacts/data_validation/status_data_validation_post_t.txt
+  req_files: [ stud_tnsf.csv ]
+  status_file: data_validation_post_t_status.txt
 
 data_split:
   test_size: 0.4
-  data_root_dir: artifacts/data_transformation
-  required_files: [ stud_tnsf.csv ]
-  data_file: artifacts/data_transformation/stud_tnsf.csv
   root_dir: artifacts/data_split
+  req_files: [ stud_tnsf.csv ]
   split_files: [X_train.csv, X_validate.csv, X_test.csv, y_train.csv, y_validate.csv, y_test.csv]
-  status_file: artifacts/data_validation/status_data_split.txt
+  status_file: data_split_status.txt
 
 model:
   target: math_score
   model_type: regression
   preprocessing: disjoint
 
-model_training:
-  data_root_dir: artifacts/data_transformation
-  required_files: [ stud_tnsf.csv ]
-  data_file: artifacts/data_transformation/stud_tnsf.csv
-  root_dir: artifacts/model_training
-  status_file: artifacts/model_training/status_model_training.txt
+#model_training:
+#  data_root_dir: artifacts/data_transformation
+#  required_files: [ stud_tnsf.csv ]
+#  data_file: artifacts/data_transformation/stud_tnsf.csv
+#  root_dir: artifacts/model_training
+#  status_file: artifacts/model_training/status_model_training.txt
 
 plot_layouts:
   features_plots_layout:

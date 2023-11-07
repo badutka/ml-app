@@ -56,7 +56,7 @@ class DataIngestionPipeline(Pipeline):
     @staticmethod
     def run():
         create_directories([settings.artifacts_root])
-        data_ingestion = DataIngestion(config=settings.data_ingestion)
+        data_ingestion = DataIngestion(config=settings)
         data_ingestion.download_file()
         data_ingestion.extract_zip_file()
 
@@ -68,9 +68,9 @@ class DataValidationPreTransformPipeline(Pipeline):
 
     @staticmethod
     def run():
-        file_validator = FileValidator(config=settings.data_validation)
+        file_validator = FileValidator(config=settings.data_validation, config_req_files=settings.data_ingestion)
         file_validator.validate_all_files_exist()
-        data_validator = StudentDataValidator(config=settings.data_validation)
+        data_validator = StudentDataValidator(config=settings)
         data_validator.validate_data()
 
 
@@ -81,9 +81,9 @@ class DataTransformationPipeline(Pipeline):
 
     @staticmethod
     def run():
-        file_validator = FileValidator(config=settings.data_transformation)
+        file_validator = FileValidator(config=settings.data_transformation, config_req_files=settings.data_ingestion)
         file_validator.validate_all_files_exist()
-        data_transformer = StudentDataTransformer(config=settings.data_transformation)
+        data_transformer = StudentDataTransformer(config=settings)
         data_transformer.transform()
         data_transformer.save()
 
@@ -95,9 +95,9 @@ class DataValidationPostTransformPipeline(Pipeline):
 
     @staticmethod
     def run():
-        file_validator = FileValidator(config=settings.data_validation_post_t)
+        file_validator = FileValidator(config=settings.data_validation_post_t, config_req_files=settings.data_transformation)
         file_validator.validate_all_files_exist()
-        data_validator = StudentTransformedDataValidator(config=settings.data_validation_post_t)
+        data_validator = StudentTransformedDataValidator(config=settings)
         data_validator.validate_data()
 
 
@@ -108,9 +108,9 @@ class DataSplitPipeline(Pipeline):
 
     @staticmethod
     def run():
-        file_validator = FileValidator(config=settings.data_split)
+        file_validator = FileValidator(config=settings.data_split, config_req_files=settings.data_transformation)
         file_validator.validate_all_files_exist()
-        data_splitter = DataSplitter(config=settings.data_split, model_config=settings.model)
+        data_splitter = DataSplitter(config=settings)
         data_splitter.train_validate_test_split()
 
 

@@ -37,43 +37,36 @@ class UnexpectedPropertyValidator(BaseModel):
 class DataIngestionSettings(UnexpectedPropertyValidator):
     root_dir: Path
     source_URL: str
-    local_data_file: Path
+    zipped_file: str
     unzip_dir: Path
+    data_file: str
 
 
 class DataValidationSettings(UnexpectedPropertyValidator):
-    data_file: Path
-    required_files: typing.List
-    data_root_dir: Path
     root_dir: Path
-    status_file: Path
+    req_files: typing.List
+    status_file: str
 
 
 class DataTransformationSettings(UnexpectedPropertyValidator):
-    data_file: Path
-    required_files: typing.List
-    data_root_dir: Path
     root_dir: Path
-    data_file_transformed: Path
-    status_file: Path
+    req_files: typing.List
+    data_file_tnsf: str
+    status_file: str
 
 
 class DataValidationPostTransformSettings(UnexpectedPropertyValidator):
-    data_file: Path
-    required_files: typing.List
-    data_root_dir: Path
     root_dir: Path
-    status_file: Path
+    req_files: typing.List
+    status_file: str
 
 
 class DataSplitSettings(UnexpectedPropertyValidator):
     test_size: pydantic.StrictFloat
-    data_root_dir: Path
-    required_files: typing.List
-    data_file: Path
     root_dir: Path
+    req_files: typing.List
     split_files: typing.List
-    status_file: Path
+    status_file: str
 
 
 class ModelSettings(UnexpectedPropertyValidator):
@@ -83,10 +76,8 @@ class ModelSettings(UnexpectedPropertyValidator):
 
 
 class ModelTrainingSettings(UnexpectedPropertyValidator):
-    data_root_dir: Path
-    required_files: typing.List
-    data_file: Path
     root_dir: Path
+    req_files: typing.List
     status_file: Path
 
 
@@ -96,13 +87,16 @@ class PlotLayoutsSettings(UnexpectedPropertyValidator):
 
 class Settings(UnexpectedPropertyValidator):
     artifacts_root: Path
+
     data_ingestion: DataIngestionSettings
     data_validation: DataValidationSettings
     data_transformation: DataTransformationSettings
     data_validation_post_t: DataValidationPostTransformSettings
     data_split: DataSplitSettings
+
     model: ModelSettings
-    model_training: ModelTrainingSettings
+    # model_training: ModelTrainingSettings
+
     plot_layouts: PlotLayoutsSettings
 
 
