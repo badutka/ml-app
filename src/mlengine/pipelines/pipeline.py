@@ -7,6 +7,8 @@ from mlengine.common.utils import create_directories
 from mlengine.dataops.validate import FileValidator, StudentDataValidator, StudentTransformedDataValidator
 from mlengine.dataops.transform import StudentDataTransformer
 from mlengine.dataops.split import DataSplitter
+from mlengine.features.prep import Preprocessor
+from mlengine.models.train import ModelTrainer
 
 
 class Pipeline(metaclass=abc.ABCMeta):
@@ -56,7 +58,7 @@ class DataIngestionPipeline(Pipeline):
     @staticmethod
     def run():
         create_directories([settings.artifacts_root])
-        data_ingestion = DataIngestion(config=settings)
+        data_ingestion = DataIngestion(config=settings.data_ingestion)
         data_ingestion.download_file()
         data_ingestion.extract_zip_file()
 
@@ -68,9 +70,9 @@ class DataValidationPreTransformPipeline(Pipeline):
 
     @staticmethod
     def run():
-        file_validator = FileValidator(config=settings.data_validation, config_req_files=settings.data_ingestion)
+        file_validator = FileValidator(config=settings.data_validation)
         file_validator.validate_all_files_exist()
-        data_validator = StudentDataValidator(config=settings)
+        data_validator = StudentDataValidator(config=settings.data_validation)
         data_validator.validate_data()
 
 
@@ -81,9 +83,9 @@ class DataTransformationPipeline(Pipeline):
 
     @staticmethod
     def run():
-        file_validator = FileValidator(config=settings.data_transformation, config_req_files=settings.data_ingestion)
+        file_validator = FileValidator(config=settings.data_transformation)
         file_validator.validate_all_files_exist()
-        data_transformer = StudentDataTransformer(config=settings)
+        data_transformer = StudentDataTransformer(config=settings.data_transformation)
         data_transformer.transform()
         data_transformer.save()
 
@@ -95,9 +97,9 @@ class DataValidationPostTransformPipeline(Pipeline):
 
     @staticmethod
     def run():
-        file_validator = FileValidator(config=settings.data_validation_post_t, config_req_files=settings.data_transformation)
+        file_validator = FileValidator(config=settings.data_validation_post_t)
         file_validator.validate_all_files_exist()
-        data_validator = StudentTransformedDataValidator(config=settings)
+        data_validator = StudentTransformedDataValidator(config=settings.data_validation_post_t)
         data_validator.validate_data()
 
 
@@ -108,10 +110,41 @@ class DataSplitPipeline(Pipeline):
 
     @staticmethod
     def run():
-        file_validator = FileValidator(config=settings.data_split, config_req_files=settings.data_transformation)
+        file_validator = FileValidator(config=settings.data_split)
         file_validator.validate_all_files_exist()
         data_splitter = DataSplitter(config=settings)
         data_splitter.train_validate_test_split()
+
+
+class ModelPreprocessingPipeline(Pipeline):
+    """
+    Pipeline that runs dataset split process
+    """
+
+    @staticmethod
+    def run():
+        file_validator = FileValidator(config=settings.model_preprocessing)
+        file_validator.validate_all_files_exist()
+        data_splitter = Preprocessor(config=settings.model_preprocessing)
+        data_splitter.get_features_data()
+        data_splitter.setup_preprocessing_pipeline()
+        data_splitter.fit_train_data()
+        data_splitter.save_preprocessing_pipeline()
+
+
+class ModelTrainingPipeline(Pipeline):
+    """
+    Pipeline that runs dataset split process
+    """
+
+    @staticmethod
+    def run():
+        file_validator = FileValidator(config=settings.model_training)
+        file_validator.validate_all_files_exist()
+        data_splitter = ModelTrainer(config=settings.model_training)
+        data_splitter.get_training_data()
+        data_splitter.preprocess_training_data()
+        data_splitter.train_models()
 
 
 def run_pipeline(option: str) -> None:
@@ -136,6 +169,12 @@ def run_pipeline(option: str) -> None:
         case 'data_split':
             stage_name = "Dataset Split"
             pipeline = DataSplitPipeline()
+        case 'model_preprocessing':
+            stage_name = "Model Preprocessing"
+            pipeline = ModelPreprocessingPipeline()
+        case 'model_training':
+            stage_name = "Model Training"
+            pipeline = ModelTrainingPipeline()
         case other:
             raise ValueError(f'Incorrect option: {other}.')
 

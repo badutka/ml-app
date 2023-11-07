@@ -36,9 +36,7 @@ class StudentTransformedDataTypesValidator(pydantic.BaseModel):
 class StudentDataValidator:
     def __init__(self, config: ConfigBox):
         self.config: ConfigBox = config
-        self.data_file_path: Path = self.config.data_ingestion.root_dir
-        self.data_file_name: str = self.config.data_ingestion.data_file
-        self.data_file: Path = Path(os.path.join(self.data_file_path, self.data_file_name))
+        self.data_file: Path = self.config.req_files[0]
 
     def validate_data(self):
         try:
@@ -51,10 +49,8 @@ class StudentDataValidator:
 
 class StudentTransformedDataValidator:
     def __init__(self, config: ConfigBox):
-        self.config: ConfigBox = config.data_transformation
-        self.data_file_path: Path = self.config.root_dir
-        self.data_file_name: str = self.config.data_file_tnsf
-        self.data_file: Path = Path(os.path.join(self.data_file_path, self.data_file_name))
+        self.config: ConfigBox = config
+        self.data_file: Path = self.config.req_files[0]
 
     def validate_data(self):
         try:
@@ -66,9 +62,8 @@ class StudentTransformedDataValidator:
 
 
 class FileValidator:
-    def __init__(self, config: ConfigBox, config_req_files: ConfigBox):
+    def __init__(self, config: ConfigBox):
         self.config: ConfigBox = config
-        self.config_req_files: ConfigBox = config_req_files
         self._create_dirs()
 
     def _create_dirs(self):
@@ -76,12 +71,11 @@ class FileValidator:
 
     def validate_all_files_exist(self):
         try:
-            files_in_data_root_dir = os.listdir(self.config_req_files.root_dir)
             statuses = []
             messages = []
 
             for file in self.config.req_files:
-                validation_status = file in files_in_data_root_dir
+                validation_status = os.path.isfile(file)
                 statuses.append(validation_status)
 
                 msg = f"Validation status: {validation_status} for file: {file}"

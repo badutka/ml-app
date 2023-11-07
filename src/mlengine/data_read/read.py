@@ -10,7 +10,7 @@ from mlengine.common.utils import create_directories
 
 class DataIngestion:
     def __init__(self, config: ConfigBox):
-        self.config = config.data_ingestion
+        self.config = config
         self._create_dirs()
 
     def _create_dirs(self):

@@ -9,25 +9,25 @@ data_ingestion:
 
 data_validation:
   root_dir: artifacts/data_validation
-  req_files: [ stud.csv ]
+  req_files: [ artifacts/data/stud.csv ]
   status_file: data_validation_status.txt
 
 data_transformation:
   root_dir: artifacts/data_transformation
-  req_files: [ stud.csv ]
+  req_files: [ artifacts/data/stud.csv ]
   data_file_tnsf: stud_tnsf.csv
   status_file: data_transformation_status.txt
 
 data_validation_post_t:
   root_dir: artifacts/data_validation
-  req_files: [ stud_tnsf.csv ]
+  req_files: [ artifacts/data_transformation/stud_tnsf.csv ]
   status_file: data_validation_post_t_status.txt
 
 data_split:
   test_size: 0.4
   root_dir: artifacts/data_split
-  req_files: [ stud_tnsf.csv ]
-  split_files: [X_train.csv, X_validate.csv, X_test.csv, y_train.csv, y_validate.csv, y_test.csv]
+  req_files: [ artifacts/data_transformation/stud_tnsf.csv ]
+  split_files: [ X_train.csv, X_validate.csv, X_test.csv, y_train.csv, y_validate.csv, y_test.csv ]
   status_file: data_split_status.txt
 
 model:
@@ -35,12 +35,16 @@ model:
   model_type: regression
   preprocessing: disjoint
 
-#model_training:
-#  data_root_dir: artifacts/data_transformation
-#  required_files: [ stud_tnsf.csv ]
-#  data_file: artifacts/data_transformation/stud_tnsf.csv
-#  root_dir: artifacts/model_training
-#  status_file: artifacts/model_training/status_model_training.txt
+model_preprocessing:
+  root_dir: artifacts/model_preprocessing
+  req_files: [ artifacts/data_split/X_train.csv, artifacts/data_split/y_train.csv ]
+  prep_pipeline_file: preprocessing_pipeline.pkl
+  status_file: model_preprocessing_status.txt
+
+model_training:
+  root_dir: artifacts/model_training
+  req_files: [ artifacts/data_split/X_train.csv, artifacts/data_split/y_train.csv, artifacts/model_preprocessing/preprocessing_pipeline.pkl ]
+  status_file: model_training_status.txt
 
 plot_layouts:
   features_plots_layout:

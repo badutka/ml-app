@@ -75,6 +75,13 @@ class ModelSettings(UnexpectedPropertyValidator):
     preprocessing: constr(pattern='^(joint|disjoint)$')
 
 
+class ModelPreprocessingSettings(UnexpectedPropertyValidator):
+    root_dir: Path
+    req_files: typing.List
+    prep_pipeline_file: str
+    status_file: Path
+
+
 class ModelTrainingSettings(UnexpectedPropertyValidator):
     root_dir: Path
     req_files: typing.List
@@ -95,7 +102,8 @@ class Settings(UnexpectedPropertyValidator):
     data_split: DataSplitSettings
 
     model: ModelSettings
-    # model_training: ModelTrainingSettings
+    model_preprocessing: ModelPreprocessingSettings
+    model_training: ModelTrainingSettings
 
     plot_layouts: PlotLayoutsSettings
 

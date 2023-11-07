@@ -11,9 +11,7 @@ class DataSplitter():
     def __init__(self, config: ConfigBox):
         self.config: ConfigBox = config
         self.target = self.config.model.target
-        self.data_file_path = self.config.data_transformation.root_dir
-        self.data_file_name = self.config.data_transformation.data_file_tnsf
-        self.data_file: Path = Path(os.path.join(self.data_file_path, self.data_file_name))
+        self.data_file: Path = self.config.data_split.req_files[0]
         self.root_dir: Path = self.config.data_split.root_dir
         self.split_files: list = self.config.data_split.split_files
 
@@ -39,4 +37,4 @@ class DataSplitter():
 
     def save_split_data(self, split_data):
         for i, data in enumerate(split_data):
-            data.to_csv(os.path.join(self.root_dir, self.split_files[i]))
+            data.to_csv(os.path.join(self.root_dir, self.split_files[i]), index=False)
