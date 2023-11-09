@@ -86,6 +86,7 @@ class ModelTrainingSettings(UnexpectedPropertyValidator):
     root_dir: Path
     models_dir: Path
     req_files: typing.List
+    metrics_file: str
     status_file: Path
 
 
@@ -93,6 +94,15 @@ class ModelValidationSettings(UnexpectedPropertyValidator):
     root_dir: Path
     models_dir: Path
     req_files: typing.List
+    metrics_file: str
+    status_file: Path
+
+
+class ModelTestingSettings(UnexpectedPropertyValidator):
+    root_dir: Path
+    models_dir: Path
+    req_files: typing.List
+    metrics_file: str
     status_file: Path
 
 
@@ -113,6 +123,7 @@ class Settings(UnexpectedPropertyValidator):
     model_preprocessing: ModelPreprocessingSettings
     model_training: ModelTrainingSettings
     model_validation: ModelValidationSettings
+    model_testing: ModelTestingSettings
 
     plot_layouts: PlotLayoutsSettings
 

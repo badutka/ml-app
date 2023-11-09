@@ -15,6 +15,7 @@ from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 
 from mlengine.common.logger import logger
 from mlengine.data_read.read import read_csv_file
+from mlengine.common.utils import get_num_fits
 
 
 class ModelTrainer():
@@ -51,8 +52,12 @@ class ModelTrainer():
         model_pipelines = {name: Pipeline(steps=[(name, clf)]) for name, clf in self.models.items()}
 
         for name, model_pipeline in model_pipelines.items():
-            models = GridSearchCV(model_pipeline, param_grid={}, cv=5, verbose=True)
+            logger.info(f"Training {name} model...")
+
+            models = GridSearchCV(model_pipeline, param_grid={}, cv=5, verbose=False)
             best_model = models.fit(self.X_train, self.y_train).best_estimator_
             best_model.fit(self.X_train, self.y_train)  # retrain the model again on full training data (previously we were 1 fold short for each iter of CV)
 
             joblib.dump(best_model, os.path.join(self.config.models_dir, name + ".pkl"))
+
+            logger.info(f"Training successful, model saved under '{name}.pkl'.")

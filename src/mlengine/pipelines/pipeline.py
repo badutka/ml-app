@@ -135,7 +135,7 @@ class ModelPreprocessingPipeline(Pipeline):
 
 class ModelTrainingPipeline(Pipeline):
     """
-    Pipeline that runs model training process process
+    Pipeline that runs model training process
     """
 
     @staticmethod
@@ -155,7 +155,7 @@ class ModelTrainingPipeline(Pipeline):
 
 class ModelValidationPipeline(Pipeline):
     """
-    Pipeline that runs model training process process
+    Pipeline that runs model training process
     """
 
     @staticmethod
@@ -163,6 +163,22 @@ class ModelValidationPipeline(Pipeline):
         file_validator = FileValidator(config=settings.model_validation)
         file_validator.validate_all_files_exist()
         model_evaluator = ModelEvaluator(config=settings.model_validation)
+        model_evaluator.load_models()
+        model_evaluator.load_data_files()
+        model_evaluator.preprocess_data()
+        model_evaluator.save_regression_evaluation()
+
+
+class ModelTestingPipeline(Pipeline):
+    """
+    Pipeline that runs model testing process
+    """
+
+    @staticmethod
+    def run():
+        file_validator = FileValidator(config=settings.model_testing)
+        file_validator.validate_all_files_exist()
+        model_evaluator = ModelEvaluator(config=settings.model_testing)
         model_evaluator.load_models()
         model_evaluator.load_data_files()
         model_evaluator.preprocess_data()
@@ -200,6 +216,9 @@ def run_pipeline(option: str) -> None:
         case 'model_validation':
             stage_name = "Model Validation"
             pipeline = ModelValidationPipeline()
+        case 'model_testing':
+            stage_name = "Model Testing"
+            pipeline = ModelTestingPipeline()
         case other:
             raise ValueError(f'Incorrect option: {other}.')
 

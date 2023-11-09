@@ -52,7 +52,5 @@ class ModelEvaluator():
             model_metrics = {"RMSE": rmse, "MAE": mae, "R2": r2}
             all_metrics[name] = model_metrics
 
-        output_file = "model_metrics.json"
-
-        with open(os.path.join(self.config.root_dir, output_file), "w") as file:
+        with open(os.path.join(self.config.root_dir, self.config.metrics_file), "w") as file:
             json.dump(all_metrics, file, indent=4)
