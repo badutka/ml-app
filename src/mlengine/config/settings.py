@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field
+import pydantic
+from pydantic import BaseModel, Field, model_validator, ConfigDict, constr
 from dataclasses import dataclass
 from pathlib import Path
 import typing
@@ -19,49 +20,111 @@ class Singleton(type):
         return cls._instances[cls]
 
 
-@dataclass(frozen=True)
-class DataIngestionSettings(BaseModel):
+class UnexpectedPropertyValidator(BaseModel):
+    class Config:
+        frozen = True
+        protected_namespaces = ()
+
+    @model_validator(mode='before')
+    def check_unexpected_properties(cls, values):
+        expected_properties = set(cls.__annotations__.keys())
+        unexpected_properties = set(values) - expected_properties
+        if unexpected_properties:
+            raise ValueError(f"Unexpected properties: {', '.join(unexpected_properties)}")
+        return values
+
+
+class DataIngestionSettings(UnexpectedPropertyValidator):
     root_dir: Path
     source_URL: str
-    local_data_file: Path
+    zipped_file: str
     unzip_dir: Path
+    data_file: str
 
 
-@dataclass(frozen=True)
-class DataValidationSettings(BaseModel):
-    data_file: Path
-    required_files: typing.List
-    # data_root_dir: Path
+class DataValidationSettings(UnexpectedPropertyValidator):
     root_dir: Path
-    status_file: Path
+    req_files: typing.List
+    status_file: str
 
 
-@dataclass(frozen=True)
-class DataTransformationSettings(BaseModel):
-    data_file: Path
-    required_files: typing.List
-    data_root_dir: Path
+class DataTransformationSettings(UnexpectedPropertyValidator):
     root_dir: Path
-    status_file: Path
+    req_files: typing.List
+    data_file_tnsf: str
+    status_file: str
+
+
+class DataValidationPostTransformSettings(UnexpectedPropertyValidator):
+    root_dir: Path
+    req_files: typing.List
+    status_file: str
+
+
+class DataSplitSettings(UnexpectedPropertyValidator):
+    test_size: pydantic.StrictFloat
+    root_dir: Path
+    req_files: typing.List
+    split_files: typing.List
+    status_file: str
+
+
+class ModelSettings(UnexpectedPropertyValidator):
+    target: pydantic.StrictStr
+    model_type: constr(pattern='^(regression|classification)$')
+    preprocessing: constr(pattern='^(joint|disjoint)$')
+
+
+class ModelPreprocessingSettings(UnexpectedPropertyValidator):
+    root_dir: Path
+    req_files: typing.List
+    prep_pipeline_file: str
     status_file: Path
 
 
-@dataclass(frozen=True)
-class PlotLayoutsSettings(BaseModel):
+class ModelTrainingSettings(UnexpectedPropertyValidator):
+    root_dir: Path
+    models_dir: Path
+    req_files: typing.List
+    metrics_file: str
+    status_file: Path
+
+
+class ModelValidationSettings(UnexpectedPropertyValidator):
+    root_dir: Path
+    models_dir: Path
+    req_files: typing.List
+    metrics_file: str
+    status_file: Path
+
+
+class ModelTestingSettings(UnexpectedPropertyValidator):
+    root_dir: Path
+    models_dir: Path
+    req_files: typing.List
+    metrics_file: str
+    status_file: Path
+
+
+class PlotLayoutsSettings(UnexpectedPropertyValidator):
     features_plots_layout: typing.Dict = Field(default_factory=dict)
 
-    def __init__(self, **data):
-        if 'features_plots_layout' in data and isinstance(data['features_plots_layout'], ConfigBox):
-            data['features_plots_layout'] = dict(data['features_plots_layout'])
-        super().__init__(**data)
 
-
-@dataclass(frozen=True)
-class Settings(BaseModel):
+class Settings(UnexpectedPropertyValidator):
     artifacts_root: Path
+
     data_ingestion: DataIngestionSettings
     data_validation: DataValidationSettings
     data_transformation: DataTransformationSettings
+    data_validation_post_t: DataValidationPostTransformSettings
+    data_split: DataSplitSettings
+
+    model: ModelSettings
+    model_preprocessing: ModelPreprocessingSettings
+    model_training: ModelTrainingSettings
+    model_validation: ModelValidationSettings
+    model_testing: ModelTestingSettings
+
     plot_layouts: PlotLayoutsSettings
 
 
@@ -76,6 +139,7 @@ class SettingsManager(metaclass=Singleton):
     #     return self.settings
 
     def initialize_settings(self) -> Settings:
+        # print(model_config['protected_namespaces'])
         return Settings(**self.settings)
 
 

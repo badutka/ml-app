@@ -4,6 +4,7 @@ from box import ConfigBox
 from box.exceptions import BoxValueError
 from ensure import ensure_annotations
 from pathlib import Path
+from functools import reduce
 
 from mlengine.common.logger import logger
 
@@ -20,7 +21,7 @@ def read_yaml(path_to_yaml: Path) -> ConfigBox:
     try:
         with open(path_to_yaml) as yaml_file:
             content = yaml.safe_load(yaml_file)
-            logger.info(f"Settings file [{path_to_yaml}] loaded successfully.\n{30*'*'}")
+            logger.info(f"Settings file [{path_to_yaml}] loaded successfully.\n{30 * '*'}")
             return ConfigBox(content)
     except BoxValueError:
         raise ValueError(f"Settings file [{path_to_yaml}] is empty.")
@@ -53,3 +54,8 @@ def get_size(path: Path) -> str:
     """
     size_in_kb = round(os.path.getsize(path) / 1024)
     return f"~ {size_in_kb} KB"
+
+
+def get_num_fits(grid, cv):
+    num_cand = [len(params) if params else 1 for params in grid.values()]
+    return cv * (reduce(lambda x, y: x * y, num_cand) if grid else 1)

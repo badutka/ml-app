@@ -17,10 +17,10 @@ class DataIngestion:
         create_directories([self.config.root_dir])
 
     def download_file(self):
-        if not os.path.exists(self.config.local_data_file):
+        if not os.path.exists(self.config.zipped_file):
             filename, headers = request.urlretrieve(
                 url=self.config.source_URL,
-                filename=self.config.local_data_file
+                filename=self.config.zipped_file
             )
             logger.info(f"{filename} downloaded. Headers: \n{headers}")
         else:
@@ -34,7 +34,7 @@ class DataIngestion:
         """
         unzip_path = self.config.unzip_dir
         os.makedirs(unzip_path, exist_ok=True)
-        with zipfile.ZipFile(self.config.local_data_file, 'r') as zip_ref:
+        with zipfile.ZipFile(self.config.zipped_file, 'r') as zip_ref:
             zip_ref.extractall(unzip_path)
 
 

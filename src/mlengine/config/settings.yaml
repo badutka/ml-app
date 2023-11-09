@@ -3,23 +3,64 @@ artifacts_root: artifacts
 data_ingestion:
   root_dir: artifacts/data
   source_URL: https://github.com/badutka/ml-app/raw/develop/stud.zip
-  local_data_file: artifacts/data/stud.zip
+  zipped_file: artifacts/data/stud.zip
   unzip_dir: artifacts/data
+  data_file: stud.csv
 
 data_validation:
-  data_file: artifacts/data/stud.csv
-  required_files: [ stud.csv ]
-  data_root_dir: artifacts/data
   root_dir: artifacts/data_validation
-  status_file: artifacts/data_validation/status_data_validation.txt
+  req_files: [ artifacts/data/stud.csv ]
+  status_file: data_validation_status.txt
 
 data_transformation:
-  data_file: artifacts/data/stud.csv
-  required_files: [ stud.csv ]
-  data_root_dir: artifacts/data
   root_dir: artifacts/data_transformation
-  data_file_transformed: artifacts/data_transformation/stud_tnsf.csv
-  status_file: artifacts/data_validation/status_data_transformation.txt
+  req_files: [ artifacts/data/stud.csv ]
+  data_file_tnsf: stud_tnsf.csv
+  status_file: data_transformation_status.txt
+
+data_validation_post_t:
+  root_dir: artifacts/data_validation
+  req_files: [ artifacts/data_transformation/stud_tnsf.csv ]
+  status_file: data_validation_post_t_status.txt
+
+data_split:
+  test_size: 0.4
+  root_dir: artifacts/data_split
+  req_files: [ artifacts/data_transformation/stud_tnsf.csv ]
+  split_files: [ X_train.csv, X_validate.csv, X_test.csv, y_train.csv, y_validate.csv, y_test.csv ]
+  status_file: data_split_status.txt
+
+model:
+  target: math_score
+  model_type: regression
+  preprocessing: disjoint
+
+model_preprocessing:
+  root_dir: artifacts/model_preprocessing
+  req_files: [ artifacts/data_split/X_train.csv, artifacts/data_split/y_train.csv ]
+  prep_pipeline_file: preprocessing_pipeline.pkl
+  status_file: model_preprocessing_status.txt
+
+model_training:
+  root_dir: artifacts/model_training
+  models_dir: artifacts/model_training/models
+  req_files: [ artifacts/data_split/X_train.csv, artifacts/data_split/y_train.csv, artifacts/model_preprocessing/preprocessing_pipeline.pkl ]
+  metrics_file: model_metrics.json
+  status_file: model_training_status.txt
+
+model_validation:
+  root_dir: artifacts/model_validation
+  models_dir: artifacts/model_training/models
+  req_files: [ artifacts/data_split/X_validate.csv, artifacts/data_split/y_validate.csv, artifacts/model_preprocessing/preprocessing_pipeline.pkl ]
+  metrics_file: model_metrics.json
+  status_file: model_validation_status.txt
+
+model_testing:
+  root_dir: artifacts/model_testing
+  models_dir: artifacts/model_training/models
+  req_files: [ artifacts/data_split/X_test.csv, artifacts/data_split/y_test.csv, artifacts/model_preprocessing/preprocessing_pipeline.pkl ]
+  metrics_file: model_metrics.json
+  status_file: model_testing_status.txt
 
 plot_layouts:
   features_plots_layout:
