@@ -56,7 +56,8 @@ class ModelTrainer():
             logger.info(f"Training {name} model...")
 
             param_grid = setup_param_grid(self.models_params, name)
-            models = GridSearchCV(model_pipeline, param_grid=param_grid, cv=self.models_params[name].cv, verbose=False)
+            cv = self.models_params[name].cv if name in self.models_params else 5
+            models = GridSearchCV(model_pipeline, param_grid=param_grid, cv=cv, verbose=False)
             best_model = models.fit(self.X_train, self.y_train).best_estimator_
             best_model.fit(self.X_train, self.y_train)  # retrain the model again on full training data (previously we were 1 fold short for each iter of CV)
 
