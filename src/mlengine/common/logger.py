@@ -7,7 +7,7 @@ LOG_FILE = f'{datetime.now().strftime("%m_%d_%Y_%H_%M_%S")}.log'
 LOG_PATH = os.path.join(os.getcwd(), 'logs')
 os.makedirs(LOG_PATH, exist_ok=True)
 LOG_FILE_PATH = os.path.join(LOG_PATH, LOG_FILE)
-LOG_FORMAT = '[ %(asctime)s ] %(lineno)d %(name)s - %(levelname)s - %(message)s'
+LOG_FORMAT = '[ %(asctime)s ] [%(lineno)d] [%(name)s] - %(levelname)s - %(message)s'
 
 
 class Singleton(type):
