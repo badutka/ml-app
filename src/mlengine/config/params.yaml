@@ -1,18 +1,13 @@
-# Model-specific parameters and grids
-model_1:
-  param_grid:
-    - {param_1: value_1, param_2: value_2}
-    - {param_1: value_3, param_2: value_4}
-  hyperparameters:
-    learning_rate: 0.1
-    n_estimators: 100
-  # Other model-specific settings
-
-model_2:
-  param_grid:
-    - {param_a: value_a, param_b: value_b}
-    - {param_a: value_c, param_b: value_d}
-  hyperparameters:
-    learning_rate: 0.01
-    n_estimators: 200
-  # Other model-specific settings
+RandomForestRegressor:
+  "default":
+    { }
+  "random_search":
+    { }
+  "grid_search":
+#      'n_estimators': [ 50, 100, 200, 400 ]
+#      'criterion': [ 'friedman_mse', 'squared_error' ]
+#      'max_depth': [ 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
+#      'min_samples_split': [ 2, 5, 10, 15, 20, 25 ]
+#      'min_samples_leaf': [ 2, 4, 6, 8, 10 ]
+    { }
+  "cv": 5
