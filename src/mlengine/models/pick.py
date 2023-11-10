@@ -1,15 +1,8 @@
-import numpy as np
 import os
 from box import ConfigBox
 from pathlib import Path
 import joblib
 import json
-
-from sklearn.svm import SVR
-from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
-
-from mlengine.common.exceptions import MissingCriticalFileException
-from mlengine.data_read.read import read_csv_file
 
 
 class ModelPicker():
