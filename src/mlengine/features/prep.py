@@ -8,6 +8,7 @@ from sklearn.compose import ColumnTransformer
 from sklearn.feature_selection import RFE
 from sklearn.svm import SVR
 from sklearn.pipeline import Pipeline
+from sklearn.impute import SimpleImputer
 
 from mlengine.data_read.read import read_csv_file
 
@@ -32,13 +33,20 @@ class Preprocessor():
         num_features = self.X_train.select_dtypes(exclude="object").columns
         cat_features = self.X_train.select_dtypes(include="object").columns
 
-        numeric_transformer = StandardScaler()
-        oh_transformer = OneHotEncoder()
+        num_pipeline = Pipeline(steps=[
+            ("SimpleImputer", SimpleImputer(strategy='mean')),
+            ("StandardScaler", StandardScaler())
+        ])
+
+        cat_pipeline = Pipeline(steps=[
+            ("SimpleImputer", SimpleImputer(strategy='most_frequent')),
+            ("OneHotEncoder", OneHotEncoder())
+        ])
 
         preprocessor = ColumnTransformer(
             [
-                ("OneHotEncoder", oh_transformer, cat_features),
-                ("StandardScaler", numeric_transformer, num_features),
+                ("NumericalPipeline", num_pipeline, num_features),
+                ("CategoricalPipeline", cat_pipeline, cat_features),
             ]
         )
 

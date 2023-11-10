@@ -1,0 +1,18 @@
+# Model-specific parameters and grids
+model_1:
+  param_grid:
+    - {param_1: value_1, param_2: value_2}
+    - {param_1: value_3, param_2: value_4}
+  hyperparameters:
+    learning_rate: 0.1
+    n_estimators: 100
+  # Other model-specific settings
+
+model_2:
+  param_grid:
+    - {param_a: value_a, param_b: value_b}
+    - {param_a: value_c, param_b: value_d}
+  hyperparameters:
+    learning_rate: 0.01
+    n_estimators: 200
+  # Other model-specific settings
