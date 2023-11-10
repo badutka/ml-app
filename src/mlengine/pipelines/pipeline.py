@@ -10,6 +10,7 @@ from mlengine.dataops.split import DataSplitter
 from mlengine.features.prep import Preprocessor
 from mlengine.models.train import ModelTrainer
 from mlengine.models.evaluate import ModelEvaluator
+from mlengine.models.pick import ModelPicker
 
 
 class Pipeline(metaclass=abc.ABCMeta):
@@ -183,6 +184,9 @@ class ModelTestingPipeline(Pipeline):
         model_evaluator.load_data_files()
         model_evaluator.preprocess_data()
         model_evaluator.save_regression_evaluation()
+        model_picker = ModelPicker(config=settings)
+        model_picker.pick_best_model()
+        model_picker.save_best_model()
 
 
 def run_pipeline(option: str) -> None:

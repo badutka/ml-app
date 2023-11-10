@@ -104,6 +104,7 @@ class ModelTestingSettings(UnexpectedPropertyValidator):
     models_dir: Path
     req_files: typing.List
     metrics_file: str
+    selected_test_metric: str
     status_file: Path
 
 
