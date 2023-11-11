@@ -1,7 +1,4 @@
 from flask import Flask, request, render_template
-import pandas as pd
-
-from sklearn.preprocessing import StandardScaler
 
 from mlengine.models.predict import Prediction, CustomData
 
