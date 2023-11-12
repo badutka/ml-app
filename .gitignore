@@ -152,4 +152,9 @@ cython_debug/
 #.idea/
 
 artifacts/*
+!artifacts/model_preprocessing/
+artifacts/model_preprocessing/*.txt
+!artifacts/model_testing/
+artifacts/model_testing/*.txt
+artifacts/model_testing/*.json
 catboost_info/*
