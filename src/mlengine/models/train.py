@@ -15,7 +15,7 @@ from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
 
 from mlengine.common.logger import logger
 from mlengine.data_read.read import read_csv_file
-from mlengine.common.utils import get_num_fits
+from mlengine.common.utils import get_num_fits, setup_param_grid, read_yaml
 
 
 class ModelTrainer():
@@ -27,16 +27,17 @@ class ModelTrainer():
         self.X_train = None
         self.y_train = None
         self.models = {
-            "Linear Regression": LinearRegression(),
+            "LinearRegression": LinearRegression(),
             "Lasso": Lasso(),
             "Ridge": Ridge(),
-            "K-Neighbors Regressor": KNeighborsRegressor(),
-            "Decision Tree": DecisionTreeRegressor(),
-            "Random Forest Regressor": RandomForestRegressor(),
+            "K-NeighborsRegressor": KNeighborsRegressor(),
+            "DecisionTreeRegressor": DecisionTreeRegressor(),
+            "RandomForestRegressor": RandomForestRegressor(),
             "XGBRegressor": XGBRegressor(),
-            "CatBoosting Regressor": CatBoostRegressor(verbose=False),
-            "AdaBoost Regressor": AdaBoostRegressor()
+            "CatBoostingRegressor": CatBoostRegressor(verbose=False),
+            "AdaBoostRegressor": AdaBoostRegressor()
         }
+        self.models_params = read_yaml(Path('src/mlengine/config/params.yaml'))
 
         self.fit_best_models = []
 
@@ -54,7 +55,9 @@ class ModelTrainer():
         for name, model_pipeline in model_pipelines.items():
             logger.info(f"Training {name} model...")
 
-            models = GridSearchCV(model_pipeline, param_grid={}, cv=5, verbose=False)
+            param_grid = setup_param_grid(self.models_params, name)
+            cv = self.models_params[name].cv if name in self.models_params else 5
+            models = GridSearchCV(model_pipeline, param_grid=param_grid, cv=cv, verbose=False)
             best_model = models.fit(self.X_train, self.y_train).best_estimator_
             best_model.fit(self.X_train, self.y_train)  # retrain the model again on full training data (previously we were 1 fold short for each iter of CV)
 

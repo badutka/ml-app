@@ -60,6 +60,7 @@ model_testing:
   models_dir: artifacts/model_training/models
   req_files: [ artifacts/data_split/X_test.csv, artifacts/data_split/y_test.csv, artifacts/model_preprocessing/preprocessing_pipeline.pkl ]
   metrics_file: model_metrics.json
+  selected_test_metric: R2
   status_file: model_testing_status.txt
 
 plot_layouts:

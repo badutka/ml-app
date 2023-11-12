@@ -1,11 +1,10 @@
 import pydantic
-from pydantic import BaseModel, Field, model_validator, ConfigDict, constr
-from dataclasses import dataclass
+from pydantic import BaseModel, Field, model_validator, constr
 from pathlib import Path
 import typing
-from mlengine.common.utils import read_yaml
 import os
-from box import ConfigBox
+
+from mlengine.common.utils import read_yaml
 
 
 class Singleton(type):
@@ -103,6 +102,7 @@ class ModelTestingSettings(UnexpectedPropertyValidator):
     models_dir: Path
     req_files: typing.List
     metrics_file: str
+    selected_test_metric: str
     status_file: Path
 
 
@@ -130,7 +130,6 @@ class Settings(UnexpectedPropertyValidator):
 
 class SettingsManager(metaclass=Singleton):
     def __init__(self):
-        pass
         current_file_path = os.path.abspath(__file__)
         file_path = Path(os.path.join(os.path.dirname(current_file_path), "settings.yaml"))
         self.settings = read_yaml(file_path)
