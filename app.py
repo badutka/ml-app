@@ -26,11 +26,11 @@ def predict():
             reading_score=int(request.form.get('reading_score')),
             writing_score=int(request.form.get('writing_score')),
         )
+
         pred_df = data.get_data_as_data_frame()
-        print(pred_df)
         prediction = Prediction()
         results = prediction.predict(pred_df)
-        print(results)
+
         return render_template('prediction.html', results=results[0])
 
 
