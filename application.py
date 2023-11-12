@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template
 
-from mlengine.models.predict import Prediction, CustomData
+from src.mlengine.models.predict import Prediction, CustomData
 
 application = Flask(__name__)
 
