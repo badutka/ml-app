@@ -1,6 +1,11 @@
 from flask import Flask, request, render_template
+import os
+import sys
 
-from src.mlengine.models.predict import Prediction, CustomData
+src_path = os.path.join(os.path.dirname(__file__), 'src')
+sys.path.insert(0, src_path)
+
+from mlengine.models.predict import Prediction, CustomData
 
 application = Flask(__name__)
 
