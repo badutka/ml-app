@@ -7,8 +7,8 @@ from sklearn.ensemble import RandomForestRegressor, AdaBoostRegressor
 from sklearn.linear_model import LinearRegression, Ridge, Lasso
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.tree import DecisionTreeRegressor
-from catboost import CatBoostRegressor
-from xgboost import XGBRegressor
+# from catboost import CatBoostRegressor
+# from xgboost import XGBRegressor
 
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import RandomizedSearchCV, GridSearchCV
@@ -33,8 +33,8 @@ class ModelTrainer():
             "K-NeighborsRegressor": KNeighborsRegressor(),
             "DecisionTreeRegressor": DecisionTreeRegressor(),
             "RandomForestRegressor": RandomForestRegressor(),
-            "XGBRegressor": XGBRegressor(),
-            "CatBoostingRegressor": CatBoostRegressor(verbose=False),
+            # "XGBRegressor": XGBRegressor(),
+            # "CatBoostingRegressor": CatBoostRegressor(verbose=False),
             "AdaBoostRegressor": AdaBoostRegressor()
         }
         self.models_params = read_yaml(Path('src/mlengine/config/params.yaml'))

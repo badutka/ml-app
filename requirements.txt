@@ -8,7 +8,5 @@ PyYAML
 pydantic
 plotly
 scikit-learn
-catboost
-xgboost
 Flask
 -e .
