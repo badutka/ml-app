@@ -25,7 +25,6 @@ class Logger(metaclass=Singleton):
 
     @staticmethod
     def initialize_logging():
-        print('hello')
         if not logging.root.handlers:
             formatter = logging.Formatter(LOG_FORMAT)
             logger = logging.getLogger(LOG_FILE)
