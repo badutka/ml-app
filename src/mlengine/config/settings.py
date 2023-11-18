@@ -134,13 +134,8 @@ class SettingsManager(metaclass=Singleton):
         file_path = Path(os.path.join(os.path.dirname(current_file_path), "settings.yaml"))
         self.settings = read_yaml(file_path)
 
-    # def get_settings(self) -> ConfigBox:
-    #     return self.settings
-
     def initialize_settings(self) -> Settings:
-        # print(model_config['protected_namespaces'])
         return Settings(**self.settings)
 
 
-# settings = SettingsManager().get_settings()
 settings = SettingsManager().initialize_settings()
