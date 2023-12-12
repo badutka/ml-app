@@ -9,4 +9,8 @@ pydantic
 plotly
 scikit-learn
 Flask
+
+streamlit
+dash
+
 -e .
